@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBS Bauchbinde Controller</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="controller-body">
+  <div class="controller-card">
+    <div class="controller-head">
+      <div>
+        <h1>Bauchbinde Controller</h1>
+        <p id="syncStatus">Synchronisierung wird geladen …</p>
+      </div>
+      <span id="livePill" class="pill off">AUS</span>
+    </div>
+
+    <label>Erste Zeile / Name</label>
+    <input id="inputLine1" type="text" maxlength="44" placeholder="Name des Redners" />
+
+    <label>Zweite Zeile / Funktion oder Thema</label>
+    <input id="inputLine2" type="text" maxlength="58" placeholder="Funktion / Thema" />
+
+    <div class="button-row">
+      <button id="saveBtn" class="btn primary">Text speichern</button>
+      <button id="showBtn" class="btn show">Einblenden</button>
+      <button id="hideBtn" class="btn hide">Ausblenden</button>
+    </div>
+
+    <button id="resetBtn" class="btn reset">Reset</button>
+
+    <div class="preview-wrap">
+      <div class="preview-title">Vorschau</div>
+      <iframe src="output.html" class="preview"></iframe>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const inputLine1 = document.getElementById("inputLine1");
+    const inputLine2 = document.getElementById("inputLine2");
+    const livePill = document.getElementById("livePill");
+    const syncStatus = document.getElementById("syncStatus");
+
+    LowerThirdStore.listen((state) => {
+      if (document.activeElement !== inputLine1) inputLine1.value = state.line1 || "";
+      if (document.activeElement !== inputLine2) inputLine2.value = state.line2 || "";
+      livePill.textContent = state.visible ? "EIN" : "AUS";
+      livePill.className = "pill " + (state.visible ? "on" : "off");
+      syncStatus.textContent = LowerThirdStore.isFirebase ? "Online Sync aktiv – mehrere Geräte möglich" : "Lokaler Testmodus – Firebase Config fehlt";
+    });
+
+    document.getElementById("saveBtn").onclick = () => LowerThirdStore.set({ line1: inputLine1.value, line2: inputLine2.value });
+    document.getElementById("showBtn").onclick = () => LowerThirdStore.set({ visible: true, line1: inputLine1.value, line2: inputLine2.value });
+    document.getElementById("hideBtn").onclick = () => LowerThirdStore.set({ visible: false });
+    document.getElementById("resetBtn").onclick = () => LowerThirdStore.reset();
+  </script>
+</body>
+</html>

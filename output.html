@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBS Bauchbinde Output</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="output-body">
+  <main class="stage">
+    <section id="lowerThird" class="lower-third" aria-live="polite">
+      <div class="lt-shadow"></div>
+      <div class="lt-main">
+        <div class="lt-accent"></div>
+        <div class="lt-emblem">
+          <div class="lt-dot"></div>
+        </div>
+        <div class="lt-text">
+          <div id="line1" class="line1">Name des Redners</div>
+          <div id="line2" class="line2">Funktion / Thema</div>
+        </div>
+        <div class="lt-gold"></div>
+      </div>
+      <div class="lt-tag">LIVE</div>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const lowerThird = document.getElementById("lowerThird");
+    const line1 = document.getElementById("line1");
+    const line2 = document.getElementById("line2");
+
+    LowerThirdStore.listen((state) => {
+      line1.textContent = state.line1 || "";
+      line2.textContent = state.line2 || "";
+      lowerThird.classList.toggle("show", !!state.visible);
+    });
+  </script>
+</body>
+</html>
